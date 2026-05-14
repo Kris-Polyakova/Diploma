@@ -84,9 +84,17 @@
         "http://<SERVER_IP>",
     ]
 
+    и прописать STATIC_ROOT
+    STATIC_URL = '/static/'
+    STATIC_ROOT = BASE_DIR / 'static'
+
+    cd /var/www/filehost/backend
+    python manage.py collectstatic
+
     gunicorn config.wsgi:application --bind 0.0.0.0:8000
     http://<SERVER_IP>:8000/admin/ (проверка, должно работать)
     CTRL + C
+    
 
 11. Systemd service
     nano /etc/systemd/system/gunicorn.service
@@ -141,7 +149,7 @@
         server {
             listen 80;
 
-            server_name SERVER_IP;
+            server_name <SERVER_IP>;
 
             root /var/www/filehost/frontend/dist;
             index index.html;
@@ -200,3 +208,7 @@
 
     nginx -t (проверка)
     systemctl restart nginx
+
+18. Права админа для admin
+    Зайти в http://<SERVER_IP>/admin/ 
+    В users дать администратору все права
