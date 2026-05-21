@@ -6,11 +6,12 @@ from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
-from .serializers import UserRegisterSerializer, UserSerializer
+from .serializers import UserRegisterSerializer, UserSerializer, AdminUserListSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import AdminUserUpdateSerializer
+from django.db.models import Count, Sum
 
 User = get_user_model()
 
@@ -67,9 +68,26 @@ class UserListView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsAdminUser]
 
     def get(self, request):
-        users = User.objects.all().values('id', 'username', 'full_name', 'email', 'is_admin', 'date_joined')
+        users = User.objects.annotate(
+            files_count=Count('files'),
+            total_size=Sum('files__size')
+        )
+
+        user_data = []
+        for user in users:
+            total_size = user.total_size or 0
+            user_data.append({
+                **{field: getattr(user, field) for field in [
+                    'id', 'username', 'full_name', 'email', 'is_admin', 'date_joined'
+                ]},
+                'files_count': user.files_count,
+                'total_size': total_size
+            })
+
+        serializer = AdminUserListSerializer(user_data, many=True)
+
         print(f"INFO Админ {request.user.username} запросил список всех пользователей")
-        return Response({"users": list(users)})
+        return Response({"users": serializer.data})
 
 
 class MeView(APIView):

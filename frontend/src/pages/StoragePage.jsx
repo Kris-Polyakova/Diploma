@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { useSearchParams } from "react-router-dom";
+import formatFileSize from "../features/formatFileSize";
+import formatDate from "../features/formatDate";
 
 export default function StoragePage() {
   const [files, setFiles] = useState([]);
@@ -79,6 +81,23 @@ export default function StoragePage() {
     }
   }
 
+  async function reCommentFile(file) {
+    const newComment = prompt("Введите новый комментарий файла:", file.comment);
+    if (!newComment) return;
+
+    try {
+      await api.patch(`/api/files/${file.id}/`, {
+        original_name: file.original_name,
+        comment: newComment,
+      });
+
+      loadFiles();
+
+    } catch (error) {
+      console.log("Ошибка переименования", error);
+    }
+  }
+
   async function downloadFile(file) {
     try {
       const response = await api.get(file.download_url, {
@@ -97,6 +116,8 @@ export default function StoragePage() {
 
       window.URL.revokeObjectURL(url);
 
+      loadFiles();
+
     } catch (error) {
       console.error("Ошибка скачивания:", error);
     }
@@ -104,7 +125,6 @@ export default function StoragePage() {
 
   async function copyLink(file) {
     const url = `${window.location.origin}${file.download_url}`;
-
     try {
       await navigator.clipboard.writeText(url);
       alert("Ссылка скопирована!");
@@ -180,14 +200,37 @@ export default function StoragePage() {
                   <div className="file-icon">📄</div>
                 )}
               </div>
-
-              {file.original_name}
-
               <div className="file-btns">
                 <button className='btns fileBtn' onClick={() => downloadFile(file)}>🖫</button>
                 <button className='btns fileBtn' onClick={() => copyLink(file)}>✉</button>
-                <button className='btns fileBtn' onClick={() => renameFile(file)}>✎</button>
                 <button className='btns fileBtn' onClick={() => deleteFile(file.id)}>✖</button>
+              </div>
+              <div className="file-info-container">
+                <div className="file-info">
+                  <span className="file-info-title">Имя:
+                    <span className="file-info-text"> {file.original_name}</span>
+                  </span>
+                </div>
+                <button className='btns fileBtnMini' onClick={() => renameFile(file)}>✎</button>
+              </div>
+              <div className="file-info-container">
+                <div className="file-info">
+                  <span className="file-info-title">Коментарий:
+                    <span className="file-info-text"> {file.comment}</span>
+                  </span>
+                </div>
+                <button className='btns fileBtnMini' onClick={() => reCommentFile(file)}>✎</button>
+              </div>
+              <div className="file-common-info">
+                  <span className="file-info-title">Размер:
+                    <span className="file-info-text"> {formatFileSize(file.size)}</span>
+                  </span>
+                  <span className="file-info-title">Последнее скачивание:</span>
+                  {file.last_downloaded_at ? (
+                    <span className="file-info-text"> {formatDate(file.last_downloaded_at)}</span>
+                  ) : (
+                    <span className="file-info-text"> нет</span>
+                  )}
               </div>
             </li>
           ))}

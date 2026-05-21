@@ -154,7 +154,7 @@
             root /var/www/filehost/frontend/dist;
             index index.html;
 
-            client_max_body_size 100M;
+            client_max_body_size 1024M;
 
             location /assets/ {
                 try_files $uri =404;

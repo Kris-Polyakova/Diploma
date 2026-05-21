@@ -210,10 +210,15 @@ form {
 }
 
 .fileBtn {
-    background-color: #728595;
+    background-color: #E7ECF0;
+    color: #34404b;
     padding: 6px;
     font-size: 14px;
-    width: calc((100% - 15px) / 4);
+    width: calc((100% - 10px) / 3);
+}
+
+.fileBtn:hover {
+    background-color: #afc3d4;
 }
 
 .users-list {
@@ -222,6 +227,9 @@ form {
     display: flex;
     flex-direction: column;
     width: 80%;
+    gap: 10px;
+    padding: 0;
+    padding-bottom: 50px;
 }
 
 .info-msg {
@@ -235,19 +243,28 @@ form {
     background-color: white;
     padding: 5px;
     border-radius: 5px;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .user {
     display: flex;
+    flex-direction: column;
     font-family: "Roboto";
     font-weight: 400;
     font-size: 16px;
     color: #495a68;
     width: 100%;
     border: 1px solid #495a68;
-    border-top: none;
     align-items: center;
+}
+
+.user-info-container {
+    display: flex;
+    border-bottom: 1px solid #495a68;
+    width: 100%;
+    justify-content: center;
+    background-color: #495a68;
+    color: white;
 }
 
 .user-info {
@@ -258,23 +275,38 @@ form {
     padding: 0 10px;
 }
 
-.user:first-child {
-    border-top: 1px solid #495a68;
+.user-info:first-child {
+    border-left: 1px solid #495a68;
 }
 
 .admin-btns-container {
+    display: flex; 
+    border-top: 1px solid #495a68;
+    width: 100%;
+    justify-content: center;
+}
+
+.user-common-info {
     display: flex;
-    margin-left: auto;
+    text-align: left;
+    flex-wrap: wrap;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
 }
 
 .admin-btn {
-    width: 140px;
     background-color: #E7ECF0;
     color: #495a68;
     padding: 6px 15px;
     font-size: 14px;
     border-radius: 0;
     border-left: 1px solid #495a68;
+}
+
+.admin-btn:last-child {
+    border-right: 1px solid #495a68;
 }
 
 .admin-btn:hover {
@@ -305,6 +337,53 @@ form {
     align-items: center;
     justify-content: center;
     font-size: 20px;
+}
+
+.file-info-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.file-info {
+    display: flex;
+    width: calc(100% - 22px);
+}
+
+.fileBtnMini {
+    background-color: #728595;
+    padding: 1px;
+    font-size: 12px;
+    min-width: 22px;
+    height: 22px;
+}
+
+.file-info-title {
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-info-text {
+    font-weight: 400;
+    text-align: left;
+}
+
+.file-common-info {
+    border-top: 1px solid #728595;
+    box-sizing: border-box;
+    padding: 7px 0;
+    text-align: left;
+}
+
+.user-info-title {
+    font-weight: 600;
+}
+
+.user-info-text {
+    font-weight: 400;
 }
 
 @media (max-width: 1225px) {
@@ -345,5 +424,3 @@ form {
         width: 100%;
     }
 }
-
-

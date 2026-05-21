@@ -71,15 +71,22 @@ class PublicDownloadView(APIView):
 
     def get(self, request, token):
         file_obj = get_object_or_404(UserFile, share_token=token)
+        file_path = file_obj.full_disk_path
 
-        if not os.path.exists(file_obj.full_disk_path):
+        if not os.path.exists(file_path):
             raise Http404("Файл не найден на сервере")
 
         file_obj.last_downloaded_at = timezone.now()
         file_obj.save(update_fields=['last_downloaded_at'])
 
-        response = FileResponse(open(file_obj.full_disk_path, 'rb'), as_attachment=True)
-        response['Content-Disposition'] = f'attachment; filename="{file_obj.original_name}"'
+        file_handle = open(file_path, 'rb')
 
-        print(f"INFO Файл '{file_obj.original_name}' скачан по публичной ссылке")
+        response = FileResponse(
+            file_handle,
+            as_attachment=True,
+            filename=file_obj.original_name
+        )
+
+        response.file_to_close = file_handle
+
         return response
