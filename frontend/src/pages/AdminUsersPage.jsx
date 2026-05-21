@@ -72,7 +72,7 @@ export default function AdminUsersPage() {
                 <span className="user-info-title">Полное имя:
                   <span className="user-info-text"> {user.full_name}</span>
                 </span>
-                <span className="user-info-title">Последний визит:
+                <span className="user-info-title">Дата регистрации:
                   <span className="user-info-text"> {formatDate(user.date_joined)}</span>
                 </span>
                 <span className="user-info-title">Количество файлов:
