@@ -125,8 +125,23 @@ export default function StoragePage() {
 
   async function copyLink(file) {
     const url = `${window.location.origin}${file.download_url}`;
+  
     try {
-      await navigator.clipboard.writeText(url);
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = url;
+  
+        document.body.appendChild(textarea);
+  
+        textarea.select();
+  
+        document.execCommand("copy");
+  
+        document.body.removeChild(textarea);
+      }
+  
       alert("Ссылка скопирована!");
     } catch (error) {
       console.log("Ошибка копирования", error);
